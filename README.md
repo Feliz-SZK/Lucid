@@ -5,7 +5,7 @@
 
 **The possible vpn leak is fixed by explicitly using the cloudflare Dns.**
 
-#### How to install:
+## How to install:
 
 get inside the lucid directory and type in
 
@@ -14,7 +14,7 @@ sudo chmod +x installer.sh
 sudo ./installer.sh
 ```
 
-### Usage:
+## Usage:
 
 **open up terminal and type in ``Lucid`` for usage.**
 
