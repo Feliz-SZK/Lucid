@@ -3,7 +3,7 @@
 
 **Lucid fetches vpnbook servers and password and let ya connect.**
 
-**The possible vpn leak is fixed by explicitly using the cloudflare Dns.**
+**The possible vpn leak is fixed by explicitly using the OpenDns.**
 
 ## How to install:
 
