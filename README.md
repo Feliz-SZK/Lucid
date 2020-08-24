@@ -20,7 +20,7 @@ sudo ./installer.sh
 
 <img src="Images/lucidusage.png" />
 
-**type in `` Lucid start`` to use 'em servers that supports p2p downloading.**
+**type in ``Lucid start`` to use 'em servers that supports p2p downloading.**
 
 **Lucid'll attempt to download the latest configs and the password offcourse.**
 
