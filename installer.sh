@@ -24,3 +24,4 @@ sudo chmod +x /usr/bin/Lucid
 
 echo "$GREEN*$BLUE =====> Done$RESETCOLOR\n"
 echo "$GREEN*$BLUE =====> Open terminal and type 'Lucid' for usage$RESETCOLOR\n "
+
