@@ -1,0 +1,257 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from signal import signal, SIGINT
+from sys import exit
+import os, random
+import sys
+import time
+import urllib2
+from StringIO import StringIO
+from zipfile import ZipFile
+import urllib 
+from urllib import urlopen
+from io import BytesIO
+from urllib2 import Request, urlopen, URLError
+import requests
+
+
+class bcolors:
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    RED = '\033[31m'
+    YELLOW = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    BGRED = '\033[41m'
+    WHITE = '\033[37m'
+    cyan='\033[36m'
+
+
+def handler(signal_received, frame):
+    print bcolors.GREEN +bcolors.BOLD + "\nCTRL-C detected. Exiting.... " + bcolors.ENDC
+    exit(0)
+
+if __name__ == '__main__':
+    signal(SIGINT, handler)
+
+def ip():
+    try:
+        ip_ = requests.get('https://icho.net/plain').text
+    except requests.exceptions.RequestException:
+         try:
+             ip1= requests.get('https://icanhazip.com/').text
+             return ip1
+         except requests.exceptions.RequestException as e:
+          print(e)
+          print " "
+          print "Either the internet's down or something's wrong in your resolv.conf"
+          sys.exit()
+            
+    return ip_ 
+
+def capture():
+
+    os.system("wget https://www.vpnbook.com/password.php -O img.png")
+    print bcolors.GREEN + bcolors.BOLD + " " + "Your Default Username is" + bcolors.ENDC + bcolors.BLUE + bcolors.BOLD +  " " +  "vpnbook" + bcolors.ENDC
+    print bcolors.GREEN + " " + "you'll get your password in a new window" + bcolors.ENDC
+    time.sleep(2)
+    os.system("fim -a img.png & ")
+    return 0
+
+
+server11 = random.choice(os.listdir("/usr/bin/ovpn/server1"))
+server22 = random.choice(os.listdir("/usr/bin/ovpn/server2"))
+us11 = random.choice(os.listdir("/usr/bin/ovpn/FastServers/us1"))
+us22 = random.choice(os.listdir("/usr/bin/ovpn/FastServers/us2"))
+ca11 = random.choice(os.listdir("/usr/bin/ovpn/FastServers/ca1"))
+ca22 = random.choice(os.listdir("/usr/bin/ovpn/FastServers/ca2"))
+fr11 = random.choice(os.listdir("/usr/bin/ovpn/FastServers/fr1"))
+fr22 = random.choice(os.listdir("/usr/bin/ovpn/FastServers/fr2"))
+
+server1 = [str(server11), "/usr/bin/ovpn/server1/"]
+server2 = [str(server22), "/usr/bin/ovpn/server2/"]
+us1 = [str(us11), "/usr/bin/ovpn/FastServers/us1/" ]
+us2 = [str(us22), "/usr/bin/ovpn/FastServers/us2/" ]
+ca1 = [str(ca11), "/usr/bin/ovpn/FastServers/ca1/" ]
+ca2 = [str(ca22), "/usr/bin/ovpn/FastServers/ca2/" ]
+fr1 = [str(fr11), "/usr/bin/ovpn/FastServers/fr1/" ]
+fr2 = [str(fr22), "/usr/bin/ovpn/FastServers/fr2/" ]
+
+
+
+dir= ['/usr/bin/ovpn/server1/', '/usr/bin/ovpn/server2/', '/usr/bin/ovpn/FastServers/us1/', '/usr/bin/ovpn/FastServers/us2/', '/usr/bin/ovpn/FastServers/ca1/', '/usr/bin/ovpn/FastServers/ca2/', '/usr/bin/ovpn/FastServers/fr1/', '/usr/bin/ovpn/FastServers/fr2/' ]
+
+
+urls= ['https://static.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-PL226.zip', 'https://static.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-DE4.zip', 'https://static.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-US1.zip', 'https://static.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-US2.zip', 'https://static.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-CA222.zip', 'https://static.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-CA198.zip', 'https://static.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-FR1.zip', 'https://static.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-FR8.zip']
+
+
+
+def refresh(element):
+    zipurl = urls[element]
+    req = urllib2.Request(zipurl)
+    try:
+          response = urllib2.urlopen(req)
+    except URLError, e:
+        if hasattr(e, 'reason'):
+              print 'We failed to reach a server.'
+              print 'Reason: ', e.reason
+              sys.exit()
+        elif hasattr(e, 'code'):
+               print 'The server couldn\'t fulfill the request.'
+               print 'Error code: ', e.code
+               sys.exit()
+    else:
+         pass
+     
+    
+    zipresp=urllib.urlopen(zipurl)  
+    zfile=ZipFile(BytesIO(zipresp.read()))
+    zfile.extractall(dir[element])
+    return 0
+    
+
+def conf():
+    print bcolors.GREEN + 'Modifying the configs to prevent Dns leak' + bcolors.ENDC
+    for d in range(0,len(dir)):
+        for elementss in os.listdir(str(dir[d])):
+            with open(dir[d] + '/' + elementss, 'r') as f:
+                lines=f.readlines()
+            with open(dir[d] + '/' + elementss, 'w') as f:
+                for i,line in enumerate(lines):
+                    if i==17:
+                        f.write('dhcp-option DNS 208.67.222.222' + '\n' + 'dhcp-option DNS 208.67.220.220' + '\n')
+                    f.write(line)
+    time.sleep(2.5)
+    print bcolors.RED + ' DONE....' + bcolors.ENDC
+
+
+
+def servers():
+    print bcolors.RED + bcolors.BOLD + r"""
+    Select Your Prefered server
+                        **PL226(server1) - Type server1
+                        **DE4(server2)   - Type server2
+                        """
+    
+    
+    vpn_config = str(raw_input(bcolors.GREEN +"So, Where to? " + bcolors.ENDC + bcolors.BLUE + bcolors.BOLD + "'server2' or 'server1' " + " " + bcolors.ENDC))
+    
+    if vpn_config=='server2':
+        print "\n\n"
+        os.system('sudo openvpn --config ' + server2[1] + server2[0])
+        pass
+    elif vpn_config=='server1':
+        print "\n\n"
+        os.system('sudo openvpn --config ' + server1[1] + server1[0])
+        pass
+    else:
+         print bcolors.GREEN  + "!" + "You gotta Double your dose mate" + bcolors.ENDC
+         sys.exit()
+         
+    return 0
+
+
+def serverb():
+    
+    print bcolors.cyan + bcolors.BOLD + r"""
+                 
+                 Select Your nearby server
+                        **Canada(server1) - Type ca1
+                        **Canada(server2) - Type ca2
+                        **Us(Server1)     - Type us1
+                        **US((server2)    - Type us2
+                        **France(Server1) - Type fr1
+                        **France(server2) - Type fr2
+                        """ + bcolors.ENDC
+                        
+    conf= raw_input(bcolors.GREEN + "Enter Your prefered Server" + " " + bcolors.ENDC)
+    
+    if conf=='ca1':
+        y=os.system('sudo openvpn --config ' + ca1[1] + ca1[0])
+    elif conf== 'ca2':
+        y=os.system('sudo openvpn --config ' + ca2[1] + ca2[0])
+    elif conf== 'us1':
+        y=os.system('sudo openvpn --config ' + ca2[1] + ca2[0])
+    elif conf== 'us2':
+        y=os.system('sudo openvpn --config ' + ca2[1] + ca2[0])
+    elif conf== 'fr1':
+        y=os.system('sudo openvpn --config ' + fr1[1] + fr1[0])
+    elif conf== 'fr2':
+        y=os.system('sudo openvpn --config ' + fr2[1] + fr2[0])
+    else:
+        print conf + bcolors.GREEN + bcolors.BOLD +  "!" + " " + "Sorry mate, but this ain't gonna work" + bcolors.ENDC
+        sys.exit()
+
+
+
+def logo():
+    
+    print bcolors.RED + bcolors.BOLD + r"""
+ ▄█       ███    █▄   ▄████████  ▄█  ████████▄  
+███       ███    ███ ███    ███ ███  ███   ▀███ 
+███       ███    ███ ███    █▀  ███▌ ███    ███ 
+███       ███    ███ ███        ███▌ ███    ███ 
+███       ███    ███ ███        ███▌ ███    ███ 
+███       ███    ███ ███    █▄  ███  ███    ███ 
+███▌    ▄ ███    ███ ███    ███ ███  ███   ▄███ 
+█████▄▄██ ████████▀  ████████▀  █▀   ████████▀  
+▀              """ + bcolors.ENDC
+    
+
+
+
+def usage():
+    
+    logo()
+    
+    print bcolors.RED + bcolors.BOLD + r"""
+        USAGE:
+        To check Your ip-address --------------------------       (Lucid myip)
+        Run Vpn(with all rounder servers) ---------------         (Lucid start)
+        Run Vpn(with fast servers but p2p isn't supported) ------ (Lucid backup)
+	    """ + bcolors.ENDC
+	    
+
+    
+arg = sys.argv[1:]
+
+if len(arg) != 1:
+    usage()
+elif sys.argv[1] == "start":
+    logo()
+    if not os.geteuid()==0:
+       sys.exit("Sorry mate, but I can't unleash my powers without sudo!")
+    print bcolors.GREEN + " " + "Wait! Refreshing the Server Database...." + bcolors.ENDC
+    for elements in range(0, len(dir)):
+      refresh(elements)
+    print bcolors.RED + " " + "[DONE]" + bcolors.ENDC
+    time.sleep(1.2)
+    conf()
+    capture()
+    servers()
+elif sys.argv[1] == "backup":
+    logo()
+    if not os.geteuid()==0:
+       sys.exit("Sorry mate, but I can't unleash my powers without sudo!")
+    print bcolors.GREEN + " " + "Wait! Refreshing the Server Database...." + bcolors.ENDC
+    for elements in range(0, len(dir)):
+      refresh(elements)
+    print bcolors.RED + " " + "[DONE]" + bcolors.ENDC
+    time.sleep(1.2)
+    conf()
+    capture()
+    serverb()
+elif sys.argv[1] == "myip":
+    logo()
+    print bcolors.GREEN + " Your ip address is " + ip() + bcolors.ENDC
+    
+else:
+    print sys.argv[1] + '! ' 'huh?'
+    usage()
+    
+    
+    
+
+
